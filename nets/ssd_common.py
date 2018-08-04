@@ -73,7 +73,7 @@ def tf_ssd_bboxes_encode_layer(labels,
         # Volumes.
         inter_vol = h * w
         union_vol = vol_anchors - inter_vol \
-            + (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
+                    + (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
         jaccard = tf.div(inter_vol, union_vol)
         return jaccard
 
@@ -131,8 +131,9 @@ def tf_ssd_bboxes_encode_layer(labels,
         # # Replace scores by -1.
         # feat_scores = tf.where(mask, -tf.cast(mask, dtype), feat_scores)
 
-        return [i+1, feat_labels, feat_scores,
+        return [i + 1, feat_labels, feat_scores,
                 feat_ymin, feat_xmin, feat_ymax, feat_xmax]
+
     # Main loop definition.
     i = 0
     [i, feat_labels, feat_scores,
@@ -172,7 +173,7 @@ def tf_ssd_bboxes_encode(labels,
       labels: 1D Tensor(int64) containing groundtruth labels;
       bboxes: Nx4 Tensor(float) with bboxes relative coordinates;
       anchors: List of Numpy array with layer anchors;
-      matching_threshold: Threshold for positive match with groundtruth bboxes;
+      ignore_threshold: Threshold for positive match with groundtruth bboxes;
       prior_scaling: Scaling of encoded coordinates.
 
     Return:
@@ -407,4 +408,3 @@ def tf_ssd_bboxes_select_all_classes(predictions_net, localizations_net,
         scores = tf.concat(l_scores, axis=1)
         bboxes = tf.concat(l_bboxes, axis=1)
         return classes, scores, bboxes
-
