@@ -60,7 +60,6 @@ from nets import ssd_common
 
 slim = tf.contrib.slim
 
-
 # =========================================================================== #
 # SSD class definition.
 # =========================================================================== #
@@ -113,16 +112,16 @@ class SSDNet(object):
         #               (213., 264.),
         #               (264., 315.)],
         anchor_ratios=[[2, .5],
-                       [2, .5, 3, 1./3],
-                       [2, .5, 3, 1./3],
-                       [2, .5, 3, 1./3],
+                       [2, .5, 3, 1. / 3],
+                       [2, .5, 3, 1. / 3],
+                       [2, .5, 3, 1. / 3],
                        [2, .5],
                        [2, .5]],
         anchor_steps=[8, 16, 32, 64, 100, 300],
         anchor_offset=0.5,
         normalizations=[20, -1, -1, -1, -1, -1],
         prior_scaling=[0.1, 0.1, 0.2, 0.2]
-        )
+    )
 
     def __init__(self, params=None):
         """Init the SSD net with some parameters. Use the default ones
@@ -343,8 +342,8 @@ def ssd_anchor_one_layer(img_shape,
     # Compute relative height and width.
     # Tries to follow the original implementation of SSD for the order.
     num_anchors = len(sizes) + len(ratios)
-    h = np.zeros((num_anchors, ), dtype=dtype)
-    w = np.zeros((num_anchors, ), dtype=dtype)
+    h = np.zeros((num_anchors,), dtype=dtype)
+    w = np.zeros((num_anchors,), dtype=dtype)
     # Add first anchor boxes with ratio=1.
     h[0] = sizes[0] / img_shape[0]
     w[0] = sizes[0] / img_shape[1]
@@ -354,8 +353,8 @@ def ssd_anchor_one_layer(img_shape,
         w[1] = math.sqrt(sizes[0] * sizes[1]) / img_shape[1]
         di += 1
     for i, r in enumerate(ratios):
-        h[i+di] = sizes[0] / img_shape[0] / math.sqrt(r)
-        w[i+di] = sizes[0] / img_shape[1] * math.sqrt(r)
+        h[i + di] = sizes[0] / img_shape[0] / math.sqrt(r)
+        w[i + di] = sizes[0] / img_shape[1] * math.sqrt(r)
     return y, x, h, w
 
 
@@ -419,14 +418,14 @@ def ssd_multibox_layer(inputs,
                            scope='conv_loc')
     loc_pred = custom_layers.channel_to_last(loc_pred)
     loc_pred = tf.reshape(loc_pred,
-                          tensor_shape(loc_pred, 4)[:-1]+[num_anchors, 4])
+                          tensor_shape(loc_pred, 4)[:-1] + [num_anchors, 4])
     # Class prediction.
     num_cls_pred = num_anchors * num_classes
     cls_pred = slim.conv2d(net, num_cls_pred, [3, 3], activation_fn=None,
                            scope='conv_cls')
     cls_pred = custom_layers.channel_to_last(cls_pred)
     cls_pred = tf.reshape(cls_pred,
-                          tensor_shape(cls_pred, 4)[:-1]+[num_anchors, num_classes])
+                          tensor_shape(cls_pred, 4)[:-1] + [num_anchors, num_classes])
     return cls_pred, loc_pred
 
 
@@ -520,6 +519,8 @@ def ssd_net(inputs,
             localisations.append(l)
 
         return predictions, localisations, logits, end_points
+
+
 ssd_net.default_image_size = 300
 
 
